@@ -1,5 +1,6 @@
 import pygame
 from sprite import character
+from sprite import alien
 
 #init pygame
 pygame.init()
@@ -20,6 +21,12 @@ clock = pygame.time.Clock()
 spaceship = character("sprites\spaceship.png", 1, 6, HW, HH, 0, 0)
 CENTER_HANDLE = 4
 index = 0
+
+#aliens
+alien_list = []
+num_aliens = 1
+while len(alien_list) < num_aliens:
+    alien_list.append(alien("sprites\invader.png", 1, 1, HW/2, HH/2, 6, 0))
 
 #Game Loop
 running = True
@@ -48,13 +55,19 @@ while running:
             elif event.key == pygame.K_UP:
                 spaceship.y_vel = 0
 
+    #MOVE AND DRAW
     spaceship.move(W,H)
     spaceship.draw(screen, index % spaceship.cell_count, spaceship.x_pos, spaceship.y_pos, CENTER_HANDLE)
-    index += 1
+
     for lazer in spaceship.magazine:
         lazer.move()
         lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, CENTER_HANDLE)
 
+    for alien in alien_list:
+        alien.move(W, H)
+        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, CENTER_HANDLE)
+
+    index += 1
     pygame.display.update()
     screen.fill((0, 0, 0))
     clock.tick(60)
