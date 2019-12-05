@@ -18,6 +18,7 @@ class sprite:
     def draw(self, surface, cellindex, x, y, handle = 0):
         surface.blit(self.sheet, (x + self.handle[handle][0], y + self.handle[handle][1]), self.cells[cellindex])
 
+    #CAN USE DEFAULT PYGAME COLLISIONS BUT NEED TO ADD RECT PROPERTY FOR THE SPRITE
     def check_collision(self, other_sprite):
         collision = pygame.sprite.collide_rect(self, other_sprite)
         if collision == True:
