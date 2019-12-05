@@ -4,12 +4,12 @@ from sprite import alien
 
 #init pygame
 pygame.init()
-W = 400
-H = 300
-HW = W/2
-HH = H/2
+width = 400
+height = 300
+half_width = width/2
+half_height = height/2
 #create screen
-screen = pygame.display.set_mode((W, H))
+screen = pygame.display.set_mode((width, height))
 screen.fill((0, 0, 0))
 pygame.display.set_caption("Space Invaders")
 clock = pygame.time.Clock()
@@ -18,7 +18,7 @@ clock = pygame.time.Clock()
 #pygame.display.set_icon(icon)
 
 #spaceship
-spaceship = character("sprites\spaceship.png", 1, 6, HW, HH, 0, 0)
+spaceship = character("sprites\spaceship.png", 1, 6, half_width, half_height, 0, 0)
 CENTER_HANDLE = 4
 index = 0
 
@@ -26,7 +26,7 @@ index = 0
 alien_list = []
 num_aliens = 1
 while len(alien_list) < num_aliens:
-    alien_list.append(alien("sprites\invader.png", 1, 1, HW/2, HH/2, 6, 0))
+    alien_list.append(alien("sprites\invader.png", 1, 1, half_width/2, half_height/2, 6, 0))
 
 #Game Loop
 running = True
@@ -56,16 +56,17 @@ while running:
                 spaceship.y_vel = 0
 
     #MOVE AND DRAW
-    spaceship.move(W,H)
+    spaceship.move(width,height)
     spaceship.draw(screen, index % spaceship.cell_count, spaceship.x_pos, spaceship.y_pos, CENTER_HANDLE)
 
     for lazer in spaceship.magazine:
         lazer.move()
         lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, CENTER_HANDLE)
+        lazer.check_collision(alien_list[0])
 
     for alien in alien_list:
-        alien.move(W, H)
-        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, CENTER_HANDLE)
+        alien.move(width, height)
+        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, CENTER_HANDLE)        
 
     index += 1
     pygame.display.update()

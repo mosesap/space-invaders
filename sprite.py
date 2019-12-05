@@ -18,6 +18,12 @@ class sprite:
     def draw(self, surface, cellindex, x, y, handle = 0):
         surface.blit(self.sheet, (x + self.handle[handle][0], y + self.handle[handle][1]), self.cells[cellindex])
 
+    def check_collision(self, other_sprite):
+        collision = pygame.sprite.collide_rect(self, other_sprite)
+        if collision == True:
+            print("HIT")
+        
+
 class lazer(sprite):
 
     def __init__(self, filename, rows, cols, x_pos, y_pos, x_vel = 0, y_vel = -20):
@@ -26,10 +32,13 @@ class lazer(sprite):
         self.y_pos = y_pos
         self.x_vel = x_vel
         self.y_vel = y_vel
-
+        #self.hitbox = (self.x_pos + self.hw, self.y_pos + self.hh)
+        #pygame.draw.rect(surface, (255, 0, 0) self.hitbox)
+    
     def move(self):
         self.x_pos += self.x_vel
         self.y_pos += self.y_vel
+        #pygame.draw.rect(surface, (255, 0, 0) self.hitbox)
         #should try deleting object once it leaves the map's bounds
 
 class alien(sprite):
