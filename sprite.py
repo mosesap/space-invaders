@@ -1,10 +1,12 @@
-import pygame
+from pygame import image
+from pygame import sprite
+#TODO implement sprite groups
 import time
 
 class sprite:
 
     def __init__(self, filename, rows, cols):
-        self.sheet = pygame.image.load(filename)
+        self.sheet = image.load(filename)
         self.rows = rows
         self.cols = cols
         self.cell_count = rows * cols
@@ -20,11 +22,12 @@ class sprite:
 
     #CAN USE DEFAULT PYGAME COLLISIONS BUT NEED TO ADD RECT PROPERTY FOR THE SPRITE
     def check_collision(self, other_sprite):
-        collision = pygame.sprite.collide_rect(self, other_sprite)
-        if collision == True:
-            print("HIT")
+        pass
+        #TODO use collision between sprite groups group 1 = invaders; group 2 = lazers
+        #collision = sprite.collide_rect(self, other_sprite)
+        #if collision == True:
+        #    print("HIT")
         
-
 class lazer(sprite):
 
     def __init__(self, filename, rows, cols, x_pos, y_pos, x_vel = 0, y_vel = -20):
@@ -67,8 +70,6 @@ class alien(sprite):
             self.y_pos = self.cell_center[1]
             self.y_vel *= -1
     
-        
-
 class character(sprite):
     
     def __init__(self, filename, rows, cols, x_pos, y_pos, x_vel, y_vel):

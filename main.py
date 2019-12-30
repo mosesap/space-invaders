@@ -1,4 +1,7 @@
 import pygame
+from pygame import display
+from pygame import time
+from pygame import image
 from sprite import character
 from sprite import alien
 
@@ -9,13 +12,11 @@ height = 300
 half_width = width/2
 half_height = height/2
 #create screen
-screen = pygame.display.set_mode((width, height))
+screen = display.set_mode((width, height))
 screen.fill((0, 0, 0))
-pygame.display.set_caption("Space Invaders")
-clock = pygame.time.Clock()
-
-#icon = pygame.image.load("icon.png")
-#pygame.display.set_icon(icon)
+display.set_caption("Space Invaders")
+clock = time.Clock()
+display.set_icon(pygame.image.load("sprites\invader.png"))
 
 #spaceship
 spaceship = character("sprites\spaceship.png", 1, 6, half_width, half_height, 0, 0)
