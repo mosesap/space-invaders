@@ -1,32 +1,25 @@
 from pygame import image
-from pygame import sprite
-#TODO implement sprite groups
+from pygame import sprite as pyg_sprite
+from pygame import Rect
 import time
 
-class sprite:
+class sprite(pyg_sprite.Sprite):
 
     def __init__(self, filename, rows, cols):
+        pyg_sprite.Sprite.__init__(self)
         self.sheet = image.load(filename)
         self.rows = rows
         self.cols = cols
         self.cell_count = rows * cols
-        self.rect = self.sheet.get_rect()
-        w = self.cell_width = self.rect.width / cols
-        h = self.cell_height = self.rect.height / rows
+        self.sp_rect = self.sheet.get_rect()
+        w = self.cell_width = self.sp_rect.width / cols
+        h = self.cell_height = self.sp_rect.height / rows
         hw, hh = self.cell_center = (w/2, h/2)
         self.cells = list([(index % cols * w, 0, w, h) for index in range(self.cell_count)])
         self.handle = list([(0,0), (-hw, 0), (-w, 0), (0, -hh), (-hw, -hh), (-w, -hh), (0, -h), (-hw, -h), (-w, -h),])
 
     def draw(self, surface, cellindex, x, y, handle = 0):
         surface.blit(self.sheet, (x + self.handle[handle][0], y + self.handle[handle][1]), self.cells[cellindex])
-
-    #CAN USE DEFAULT PYGAME COLLISIONS BUT NEED TO ADD RECT PROPERTY FOR THE SPRITE
-    def check_collision(self, other_sprite):
-        pass
-        #TODO use collision between sprite groups group 1 = invaders; group 2 = lazers
-        #collision = sprite.collide_rect(self, other_sprite)
-        #if collision == True:
-        #    print("HIT")
         
 class lazer(sprite):
 
@@ -36,14 +29,11 @@ class lazer(sprite):
         self.y_pos = y_pos
         self.x_vel = x_vel
         self.y_vel = y_vel
-        #self.hitbox = (self.x_pos + self.hw, self.y_pos + self.hh)
-        #pygame.draw.rect(surface, (255, 0, 0) self.hitbox)
     
     def move(self):
         self.x_pos += self.x_vel
         self.y_pos += self.y_vel
-        #pygame.draw.rect(surface, (255, 0, 0) self.hitbox)
-        #should try deleting object once it leaves the map's bounds
+        self.rect = Rect(self.x_pos, self.y_pos, self.cell_height/2, self.cell_width/2)
 
 class alien(sprite):
     
@@ -69,7 +59,8 @@ class alien(sprite):
         elif self.y_pos < self.cell_center[1]:
             self.y_pos = self.cell_center[1]
             self.y_vel *= -1
-    
+        self.rect = Rect(self.x_pos, self.y_pos, self.cell_height/2, self.cell_width/2)
+
 class character(sprite):
     
     def __init__(self, filename, rows, cols, x_pos, y_pos, x_vel, y_vel):
@@ -78,7 +69,7 @@ class character(sprite):
         self.y_pos = y_pos
         self.x_vel = x_vel
         self.y_vel = y_vel
-        self.magazine = []
+        self.magazine_group = pyg_sprite.Group()
         self.magazine_size = 10
         self.reload_clock = 0
         self.reload_time = 2
@@ -100,16 +91,16 @@ class character(sprite):
                 self.y_pos = screen_height - self.cell_center[1]
             elif self.y_pos < self.cell_center[1]:
                 self.y_pos = self.cell_center[1]
+        self.rect = Rect(self.x_pos, self.y_pos, self.cell_height/2, self.cell_width/2)
     
     def shoot(self):
-        if len(self.magazine) < self.magazine_size:
-            self.magazine.append(lazer("sprites\lazer.png", 1, 6, self.x_pos, self.y_pos, 0, -10))
+        if len(self.magazine_group) < self.magazine_size:
+            self.magazine_group.add(lazer("sprites\lazer.png", 1, 6, self.x_pos, self.y_pos, 0, -10))
         elif self.reload_clock == 0:
             self.reload_clock = time.time()
         elif self.reload_clock != 0:
             if (time.time() - self.reload_clock) >= 2:
-                self.magazine.clear #clear doesnt change the len() of the list
-                self.magazine = [] # I think only this line works
+                self.magazine_group.empty() 
                 self.reload_clock = 0
             
 
