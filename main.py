@@ -1,8 +1,9 @@
 import pygame
 from pygame import display, time, image
 from pygame import sprite as pyg_sprite
-from sprite import character
-from sprite import alien
+from character import character 
+from alien import alien 
+from lazer import lazer
 #------------------------------------------------------------------------------
 #init pygame
 pygame.init()
@@ -21,13 +22,13 @@ index = 0
 #------------------------------------------------------------------------------
 #spaceship
 spaceship = character("sprites\spaceship.png", 1, 6, half_width, half_height, 0, 0)
-CENTER_HANDLE = 4
+center_handle = 4
 #aliens
-#TODO Properly position aliens
+#TODO assign alien patterns
 alien_group = pyg_sprite.Group()
-num_aliens = 2
+num_aliens = 5
 while len(alien_group) < num_aliens:
-    alien_group.add(alien("sprites\invader.png", 1, 1, half_width/2, half_height/(num_aliens-len(alien_group) + 1), 6, 0))
+    alien_group.add(alien("sprites\invader.png", 1, 1, half_width/2 + len(alien_group) * 30, half_height/2, 6, 0))
 #------------------------------------------------------------------------------
 #GAME LOOP
 #------------------------------------------------------------------------------
@@ -58,16 +59,16 @@ while running:
                 spaceship.y_vel = 0
     #MOVE AND DRAW
     spaceship.move(width,height)
-    spaceship.draw(screen, index % spaceship.cell_count, spaceship.x_pos, spaceship.y_pos, CENTER_HANDLE)
+    spaceship.draw(screen, index % spaceship.cell_count, spaceship.x_pos, spaceship.y_pos, center_handle)
     for lazer in spaceship.magazine_group:
         lazer.move()
-        lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, CENTER_HANDLE)
+        lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, center_handle)
     for alien in alien_group:
         alien.move(width, height)
-        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, CENTER_HANDLE)        
+        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, center_handle)        
     pyg_sprite.groupcollide(spaceship.magazine_group, alien_group, True, True, collided=None)
     #TICK
     index += 1
     pygame.display.update()
     screen.fill((0, 0, 0))
-    clock.tick(60)
+    clock.tick(30)
