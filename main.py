@@ -68,14 +68,19 @@ while running:
     for alien in alien_group:
         alien.move(width, height)
         alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, center_handle)
-        alien.shoot()        
-        for lazer in alien.magazine_group:
-            lazer.move()
-            lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, center_handle)
-        pyg_sprite.groupcollide(alien.magazine_group, spaceship_group, True, True, collided=None)
+        if index > 100:
+            alien.shoot()        
+            for lazer in alien.magazine_group:
+                lazer.move()
+                lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, center_handle)
+            pyg_sprite.groupcollide(alien.magazine_group, spaceship_group, True, True, collided=None)
+    if len(spaceship_group) == 0:
+        running = False
     pyg_sprite.groupcollide(spaceship.magazine_group, alien_group, True, True, collided=None)
     #TICK
     index += 1
     pygame.display.update()
     screen.fill((0, 0, 0))
     clock.tick(30)
+
+    #TODO play spaceship death animations
