@@ -22,13 +22,15 @@ index = 0
 #------------------------------------------------------------------------------
 #spaceship
 spaceship = character("sprites\spaceship.png", 1, 6, half_width, half_height, 0, 0)
+spaceship_group = pyg_sprite.Group()
+spaceship_group.add(spaceship)
 center_handle = 4
 #aliens
 #TODO assign alien patterns
 alien_group = pyg_sprite.Group()
-num_aliens = 5
+num_aliens = 6
 while len(alien_group) < num_aliens:
-    alien_group.add(alien("sprites\invader.png", 1, 1, half_width/2 + len(alien_group) * 30, half_height/2, 6, 0))
+    alien_group.add(alien("sprites\invader.png", 1, 1, half_width/2 + len(alien_group) * 30, half_height/2, 6, 1))
 #------------------------------------------------------------------------------
 #GAME LOOP
 #------------------------------------------------------------------------------
@@ -65,7 +67,12 @@ while running:
         lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, center_handle)
     for alien in alien_group:
         alien.move(width, height)
-        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, center_handle)        
+        alien.draw(screen, index % alien.cell_count, alien.x_pos, alien.y_pos, center_handle)
+        alien.shoot()        
+        for lazer in alien.magazine_group:
+            lazer.move()
+            lazer.draw(screen, index % lazer.cell_count, lazer.x_pos, lazer.y_pos, center_handle)
+        pyg_sprite.groupcollide(alien.magazine_group, spaceship_group, True, True, collided=None)
     pyg_sprite.groupcollide(spaceship.magazine_group, alien_group, True, True, collided=None)
     #TICK
     index += 1
